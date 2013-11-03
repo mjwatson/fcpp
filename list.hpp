@@ -31,6 +31,10 @@ namespace fcpp
               NodePtr tail_;
               T t_;
 
+              Node(const T& t):
+                  t_(t)
+                  {}
+
               Node(NodePtr tail, const T& t) :
                   tail_(tail),
                   t_(t)
@@ -56,28 +60,33 @@ namespace fcpp
 
           NodePtr node_;
 
-          bool is_nil()
+          bool is_nil() const
           {
-              node_.get() == 0;
+              return node_.get() == 0;
           }
 
-          list() {}
 
           list(NodePtr node) : node_(node) {}
 
       public:
+
+          list() {}
 
           static const list<T> Nil()
           {
               return list<T>();
           };
 
-          bool empty()
+          list(T& t) : node_(new Node(t))
+          {
+          }
+
+          bool empty() const
           {
               return is_nil();
           }
 
-          size_t size()
+          size_t size() const
           {
               size_t result = 0;
               for(NodePtr n = node_; n != 0; n = n->tail_) {
@@ -86,7 +95,7 @@ namespace fcpp
               return result;
           }
 
-          T& operator[](size_t index)
+          T& operator[](size_t index) const
           {
               NodePtr n = node_; 
               while(n.get() != 0 && 0 < index) {
@@ -104,12 +113,12 @@ namespace fcpp
               }
           };
 
-          T& head()
+          T& head() const
           {
               return (*this)[0];
           };
 
-          list<T> tail()
+          list<T> tail() const
           {
               if(node_ != 0)
               {
@@ -122,10 +131,23 @@ namespace fcpp
               }
           };
 
-          list cons(const T& t)
+          list cons(const T& t) const
           {
               return list(boost::make_shared<Node>(node_, t));
           };
+
+          list reverse() const
+          {
+              list out = Nil();
+              list in = *this;
+              while(!in.empty())
+              {
+                  out = out.cons(in.head());
+                  in  = in.tail();
+              }
+
+              return out;
+          }
 
           struct iterator
           {
