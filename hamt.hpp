@@ -237,11 +237,9 @@ class hamt
               }
               else
               {
-                  KeyNode* kn = new KeyNode();
-                  kn->assoc(k_, v_, h_);
-                  kn->assoc(k,v,h);
-
-                  return NodePtr(kn);
+                  KeyNodePtr kn(new KeyNode());
+                  return kn->assoc(k_, v_, h_)
+                           ->assoc(k,v,h);
               }
           }
 
@@ -310,7 +308,7 @@ class hamt
           const VALUE* v = root_->get(k, hash(k));
           if(v) 
           {
-              return v;
+              return *v;
           }
           else
           {
